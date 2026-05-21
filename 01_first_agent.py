@@ -24,7 +24,9 @@ agent = Agent(
 
 # --- SECTION 4: RUN & TEST ---
 async def main():
-    result = await agent.run("Say hello and confirm Microsoft Agent Framework is working!")
+    result = await agent.run(
+        "Hello Everyone and Yash is going to teach Microsoft Agent Framework for building Agents!"
+    )
     print(f"\n🤖 Agent: {result}")
 
 
