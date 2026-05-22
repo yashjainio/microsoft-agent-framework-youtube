@@ -9,11 +9,8 @@ import datetime
 import json
 import os
 import sys
-import warnings
 
 from fastmcp import FastMCP
-
-warnings.simplefilter("ignore")
 
 # --- SECTION 1: CREATE SERVER ---
 mcp = FastMCP(name="local-dev-tools")

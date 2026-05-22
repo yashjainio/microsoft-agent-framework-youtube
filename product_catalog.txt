@@ -1,0 +1,4 @@
+PRODUCT CATALOG — TechCorp India
+- MAF Starter Kit:   ₹2,999 | AI agent development bundle
+- Cloud Deploy Pro:  ₹7,499 | Azure deployment tools
+- DevOps Suite:      ₹4,999 | CI/CD automation pack

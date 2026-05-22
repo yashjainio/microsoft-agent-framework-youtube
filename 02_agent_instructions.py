@@ -16,7 +16,6 @@ load_dotenv()
 client = OpenAIChatClient()
 
 # --- SECTION 3: THREE AGENTS WITH DIFFERENT INSTRUCTIONS ---
-
 tech_writer = Agent(
     client=client,
     name="TechWriter",
