@@ -27,16 +27,13 @@ agent = Agent(
 async def demo_no_memory():
     print("=== WITHOUT SESSION (stateless — default behaviour) ===\n")
 
-    query = "My name is Yash."
-    await agent.run("My name is Yash.")
-    print(f"Query: {query}")
+    while True:
+        query = input("User: ")
+        if query == "exit" or query == "quit":
+            break
 
-    query = "What is my name?"
-    response = await agent.run(query)  # no session → no memory
-    print(f"\nQuery: {query}")
-    print(f"Result: {response}")
-    print("👆 Agent has no idea — each call is a fresh conversation.")
-    input()
+        response = await agent.run(query)
+        print(f"Agent: {response}\n")
 
 
 # --- SECTION 4B: WITH SESSION — persistent memory ---
@@ -45,26 +42,13 @@ async def demo_with_memory():
 
     session = agent.create_session()  # creates a conversation history container
 
-    query = "My name is Yash. I am a backend developer in Bengaluru."
-    response_1 = await agent.run(query, session=session)
-    print(f"Query: {query}")
-    print(f"Turn 1: {response_1}")
+    while True:
+        query = input("User: ")
+        if query == "exit" or query == "quit":
+            break
 
-    query = "I am currently learning Microsoft Agent Framework."
-    response_2 = await agent.run(query, session=session)
-    print(f"\nQuery: {query}")
-    print(f"Turn 2: {response_2}")
-
-    query = "What is my name, city, and what am I learning?"
-    response_3 = await agent.run(query, session=session)
-    print(f"\nQuery: {query}")
-    print(f"Turn 3 (recall): {response_3}")
-
-    query = "Suggest a side project I can build to practise MAF."
-    r4 = await agent.run(query, session=session)
-    print(f"\nQuery: {query}")
-    print(f"Turn 4 (context-aware): {r4}")
-    input()
+        response = await agent.run(query, session=session)
+        print(f"Agent: {response}\n")
 
 
 # --- SECTION 4C: TWO SEPARATE SESSIONS — two independent conversations ---
