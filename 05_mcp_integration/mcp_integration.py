@@ -1,9 +1,5 @@
 # ============================================================
-# VIDEO 07 | MAF Agent using Local FastMCP stdio Server
-# Microsoft Agent Framework v1.4.0
-# pip install fastmcp "mcp --pre"
-# STEP 1: Run mcp_server.py first (keep it running)
-# STEP 2: Run this file
+# 05 - MAF Agent using Local FastMCP stdio Server
 # ============================================================
 
 # --- SECTION 1: IMPORTS ---
@@ -50,6 +46,7 @@ async def main():
             # tools passed to agent.run() — NOT to Agent() constructor
             result = await agent.run(prompt, tools=mcp_tool)
             print(f"🤖 Agent: {result}")
+            input()
 
 
 asyncio.run(main())

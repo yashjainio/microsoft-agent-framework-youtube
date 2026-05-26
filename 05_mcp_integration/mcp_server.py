@@ -1,8 +1,5 @@
 # ============================================================
-# VIDEO 07 | Local MCP Server using FastMCP (stdio transport)
-# pip install fastmcp "mcp --pre"
-# Run: python mcp_server.py
-# Keep running while mcp_integration.py connects to it.
+# 05 - Local MCP Server using FastMCP (stdio transport)
 # ============================================================
 
 import datetime
