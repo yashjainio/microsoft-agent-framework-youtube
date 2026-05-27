@@ -1,11 +1,5 @@
 # ============================================================
 # 06 - Context Providers & Agent Memory
-#
-# CORRECT API:
-#   from agent_framework import ContextProvider, SessionContext
-#   from agent_framework import InMemoryHistoryProvider
-#   TextContextProvider / FileContextProvider do NOT exist —
-#   subclass ContextProvider and implement before_run() instead.
 # ============================================================
 
 
@@ -66,22 +60,23 @@ class FileContextProvider(ContextProvider):
 # --- SECTION 4: SETUP ---
 with open("product_catalog.txt", "w") as f:
     f.write(
-        """PRODUCT CATALOG — TechCorp India
-- MAF Starter Kit:   ₹2,999 | AI agent development bundle
-- Cloud Deploy Pro:  ₹7,499 | Azure deployment tools
-- DevOps Suite:      ₹4,999 | CI/CD automation pack
-"""
+        """
+        PRODUCT CATALOG — TechCorp India
+        - MAF Starter Kit:   ₹2,999 | AI agent development bundle
+        - Cloud Deploy Pro:  ₹7,499 | Azure deployment tools
+        - DevOps Suite:      ₹4,999 | CI/CD automation pack
+        """
     )
 
 faq_provider = FAQContextProvider(
     """
-COMPANY FAQ — TechCorp India
-- Office: Bengaluru, Karnataka
-- Support: support@techcorp.in
-- Hours: Mon–Fri, 9am–6pm IST
-- Return policy: 30 days, no questions asked
-- CEO: Yash Jain  |  Founded: 2018
-"""
+    COMPANY FAQ — TechCorp India
+    - Office: Bengaluru, Karnataka
+    - Support: support@techcorp.in
+    - Hours: Mon–Fri, 9am–6pm IST
+    - Return policy: 30 days, no questions asked
+    - CEO: Yash Jain  |  Founded: 2018
+    """
 )
 catalog_provider = FileContextProvider("product_catalog.txt")
 
@@ -106,9 +101,9 @@ async def main():
         "Do you have a 60-day return policy?",
         "What city is your office in?",
     ]
-    for q in questions:
-        print(f"\n❓ {q}")
-        r = await support_agent.run(q)
+    for query in questions:
+        print(f"\n❓ {query}")
+        r = await support_agent.run(query)
         print(f"💬 {r}")
 
 

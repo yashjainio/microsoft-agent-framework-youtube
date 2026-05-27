@@ -42,7 +42,13 @@ linkedin_writer = Agent(
 )
 
 # --- SECTION 4: BUILD WORKFLOW ---
-workflow = SequentialBuilder(participants=[researcher, summarizer, linkedin_writer]).build()
+workflow = SequentialBuilder(
+    participants=[
+        researcher,
+        summarizer,
+        linkedin_writer,
+    ]
+).build()
 
 
 # --- SECTION 5: RUN & TEST ---
