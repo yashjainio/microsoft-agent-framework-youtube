@@ -47,24 +47,31 @@ workflow = SequentialBuilder(
         researcher,
         summarizer,
         linkedin_writer,
-    ]
+    ],
+    intermediate_outputs=True,
 ).build()
 
 
 # --- SECTION 5: RUN & TEST ---
 async def main():
     topic = "Microsoft Agent Framework 1.0 GA release"
+    print("=" * 75)
     print(f"📌 Topic: {topic}")
     print("Pipeline: Researcher → Summarizer → LinkedInWriter\n")
 
-    events = await workflow.run(topic)  # no stream=True
+    events = await workflow.run(topic)
 
+    print("\n================ FINAL OUTPUT ================\n")
     outputs = events.get_outputs()
-    if outputs:
-        final: AgentResponse = outputs[0]
-        for msg in final.messages:
+
+    for agent_response in outputs:
+        agent_response: AgentResponse = agent_response
+        # in our case we have one msg from this for loop, but in case of tool call it have have multiple
+        for msg in agent_response.messages:
             name = msg.author_name or "assistant"
-            print(f"[{name}]\n{msg.text}")
+            print(f"[{name}]")
+            print(msg.text)
+            print()
 
 
 asyncio.run(main())
