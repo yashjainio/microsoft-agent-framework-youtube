@@ -1,5 +1,5 @@
 # ============================================================
-# VIDEO 10 - Conditional Routing & Handoffs
+# 10 - Conditional Routing & Handoffs
 # ============================================================
 
 
@@ -64,11 +64,16 @@ ROUTE_MAP = {
 
 # --- SECTION 4: ROUTING LOGIC ---
 async def handle_query(query: str) -> str:
+    # Run the router agent to know which agent to call
     router_response = await router_agent.run(query)
     category = router_response.messages[-1].text.strip().upper()
+
+    # Check the given agent is available in ROUTE_MAP
     category = category if category in ROUTE_MAP else "GENERAL"
     specialist = ROUTE_MAP[category]
     print(f"  📍 Routed to: {specialist.name}")
+
+    # Call the agent provided by route agent
     specialist_response = await specialist.run(query)
     return specialist_response.messages[-1].text
 
@@ -83,8 +88,8 @@ async def main():
     ]
     for q in queries:
         print(f"\n💬 Yash: {q}")
-        r = await handle_query(q)
-        print(f"🤖 Response: {r}")
+        response = await handle_query(q)
+        print(f"🤖 Response: {response}")
         print("=" * 60)
 
 

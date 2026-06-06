@@ -1,5 +1,5 @@
 # ============================================================
-# VIDEO 11 - Writer-Critic Feedback Loop
+# 11 - Writer-Critic Feedback Loop
 # ============================================================
 
 
@@ -57,12 +57,13 @@ async def writer_critic_loop(topic: str, max_iterations: int = 5) -> str:
         critique = (await critic.run(draft)).text  # stateless — no session needed
         print(f"🔍 Critique: {critique}\n")
 
-        if critique.strip().startswith("APPROVED"):
+        score_match = re.search(r"SCORE:\s*(\d+)", critique)
+        score = score_match.group(1) if score_match else "0"
+        print(f"📊 Score: {score}/10 — revising...\n")
+
+        if int(score) >= 8:
             print(f"✅ Approved on iteration {i + 1}!")
             return draft
-
-        score_match = re.search(r"SCORE:\s*(\d+)", critique)
-        print(f"📊 Score: {score_match.group(1) if score_match else '?'}/10 — revising...\n")
 
         draft = (
             await writer.run(

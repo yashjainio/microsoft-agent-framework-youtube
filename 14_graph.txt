@@ -1,0 +1,36 @@
+main()
+  ↓
+resilient_agent.run()
+  ↓
+RetryMiddleware
+  ↓
+Agent (LLM loop)
+  ↓
+┌────────────────────────────────────┐
+│ TOOL CALL #1                      │
+│ flaky_stock_price("GOOGL")        │
+│   ↓                               │
+│ SafeToolMiddleware                │
+│   ↓                               │
+│ ConnectionError                   │
+│   ↓ retry                         │
+│ SUCCESS                           │
+└────────────────────────────────────┘
+  ↓
+┌────────────────────────────────────┐
+│ TOOL CALL #2                      │
+│ unreliable_calculator(...)        │
+│   ↓                               │
+│ SafeToolMiddleware                │
+│   ↓                               │
+│ RuntimeError x3                   │
+│   ↓                               │
+│ context.result = fallback         │
+│ MiddlewareTermination             │
+└────────────────────────────────────┘
+  ↓
+Agent final reasoning
+  ↓
+response.text
+  ↓
+main()
