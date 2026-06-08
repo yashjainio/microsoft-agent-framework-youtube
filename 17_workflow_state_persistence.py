@@ -39,7 +39,10 @@ writer = Agent(
 checkpoint_storage = FileCheckpointStorage(CHECKPOINT_PATH)
 
 workflow = SequentialBuilder(
-    participants=[researcher, writer],
+    participants=[
+        researcher,
+        writer,
+    ],
     intermediate_outputs=True,
     checkpoint_storage=checkpoint_storage,
 ).build()
@@ -63,6 +66,7 @@ async def demo_workflow_checkpoints():
             print(f"\n[{name}]\n{msg.text}")
 
     # Show saved checkpoints so viewer can see they're on disk
+    print("Workflow name:", workflow.name)
     saved = await checkpoint_storage.list_checkpoints(workflow_name=workflow.name)
     print(f"\n📌 {len(saved)} checkpoint(s) saved to '{CHECKPOINT_PATH}/'")
     if saved:

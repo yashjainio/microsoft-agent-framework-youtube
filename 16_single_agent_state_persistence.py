@@ -40,12 +40,14 @@ async def demo_session_persistence():
     print("=" * 60)
 
     turns = [
-        "Hi! My name is Yash and I'm building a YouTube series on Microsoft Agent Framework.",
-        "What was the series I told you about?",
-        "How many videos do you think I should have in the series?",
+        # "Hi! My name is Yash and I'm building a YouTube series on Microsoft Agent Framework.",
+        # "What was the series I told you about?",
+        # "What series I am covering now?"
+        # "The series I am covering I will call this MAF series"
+        "The series I am covering, can you tell me the name of the series?"
     ]
 
-    session = persistent_agent.create_session()
+    session = persistent_agent.create_session(session_id="persistence")
     for msg in turns:
         print(f"\n💬 Yash: {msg}")
         response = await persistent_agent.run(msg, session=session)
