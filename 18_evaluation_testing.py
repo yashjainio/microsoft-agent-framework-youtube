@@ -139,15 +139,6 @@ tool_evaluator = LocalEvaluator(
 )
 
 
-# Check 3 — custom check: no-tool response is a failure
-def no_tool_call_is_failure(item: EvalItem) -> bool:
-    """Fails if the agent answered without calling any tool at all."""
-    from agent_framework import tool_calls_present
-
-    result = tool_calls_present(item)
-    return result.passed
-
-
 # --- SECTION 5: TEST CASES ---
 weather_queries = [
     "What's the weather like in Bengaluru?",
