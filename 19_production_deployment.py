@@ -18,6 +18,7 @@ from starlette.responses import JSONResponse, StreamingResponse
 from starlette.routing import Route
 
 # --- SECTION 2: CONFIGURATION ---
+# OpenAIChatClient() with no args reads OPENAI_API_KEY + OPENAI_MODEL from env.
 load_dotenv()
 client = OpenAIChatClient()
 PORT = int(os.getenv("PORT", 8000))
