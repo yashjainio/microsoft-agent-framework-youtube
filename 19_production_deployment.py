@@ -9,19 +9,18 @@ import os
 from typing import Annotated
 
 import uvicorn
-from agent_framework import Agent, AgentResponseUpdate, ResponseStream
+from agent_framework import Agent, ResponseStream
 from agent_framework.openai import OpenAIChatClient
 from dotenv import load_dotenv
-from starlette.applications import Starlette
-from starlette.requests import Request
-from starlette.responses import JSONResponse, StreamingResponse
-from starlette.routing import Route
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 
 # --- SECTION 2: CONFIGURATION ---
 # OpenAIChatClient() with no args reads OPENAI_API_KEY + OPENAI_MODEL from env.
 load_dotenv()
 client = OpenAIChatClient()
-PORT = int(os.getenv("PORT", 8000))
+PORT = int(os.getenv("PORT", 8001))
 
 
 # --- SECTION 3: TOOLS ---
@@ -56,38 +55,46 @@ agent = Agent(
 )
 
 
-# --- SECTION 5: API ENDPOINTS ---
-async def health(request: Request) -> JSONResponse:
+# --- SECTION 5: REQUEST SCHEMA ---
+class ChatRequest(BaseModel):
+    message: str
+
+
+# --- SECTION 6: API ENDPOINTS ---
+app = FastAPI(title="ProductionAgent API")
+
+
+@app.get("/health")
+async def health() -> dict:
     """GET /health — liveness check."""
-    return JSONResponse({"status": "ok", "agent": agent.name})
+    return {"status": "ok", "agent": agent.name}
 
 
-async def chat(request: Request) -> JSONResponse:
+@app.post("/chat")
+async def chat(req: ChatRequest) -> dict:
     """POST /chat — single-turn, returns full response as JSON."""
-    body = await request.json()
-    message = body.get("message", "").strip()
+    message = req.message.strip()
     if not message:
-        return JSONResponse({"error": "message field is required"}, status_code=400)
+        raise HTTPException(status_code=400, detail="message field is required")
 
     response = await agent.run(message)
-    return JSONResponse({"reply": response.text})
+    return {"reply": response.text}
 
 
-async def chat_stream(request: Request) -> StreamingResponse:
+@app.post("/chat/stream")
+async def chat_stream(req: ChatRequest) -> StreamingResponse:
     """POST /chat/stream — streams tokens as server-sent events (SSE).
 
     Each event is a JSON line:  {"token": "..."} or {"done": true}
     Clients can consume this with EventSource or fetch + ReadableStream.
     """
-    body = await request.json()
-    message = body.get("message", "").strip()
+    message = req.message.strip()
     if not message:
-        return JSONResponse({"error": "message field is required"}, status_code=400)
+        raise HTTPException(status_code=400, detail="message field is required")
 
     async def event_generator():
         stream: ResponseStream = agent.run(message, stream=True)
         async for update in stream:
-            update: AgentResponseUpdate
             if update.text:
                 data = json.dumps({"token": update.text})
                 yield f"data: {data}\n\n"
@@ -103,29 +110,22 @@ async def chat_stream(request: Request) -> StreamingResponse:
     )
 
 
-# --- SECTION 6: APP ---
-app = Starlette(
-    routes=[
-        Route("/health", health, methods=["GET"]),
-        Route("/chat", chat, methods=["POST"]),
-        Route("/chat/stream", chat_stream, methods=["POST"]),
-    ]
-)
-
-
 # --- SECTION 7: RUN ---
-# Start the server:  python 18_production_deployment.py
-# Test non-streaming:  curl -X POST http://localhost:8000/chat \
+# Start the server:  python 19_production_deployment.py
+# Interactive docs:  http://localhost:8001/docs
+#
+# Test non-streaming:  curl -X POST http://localhost:8001/chat \
 #                       -H "Content-Type: application/json" \
 #                       -d '{"message": "What is the weather in Bengaluru?"}'
 #
-# Test streaming:      curl -X POST http://localhost:8000/chat/stream \
+# Test streaming:      curl -X POST http://localhost:8001/chat/stream \
 #                       -H "Content-Type: application/json" \
 #                       -d '{"message": "Explain async programming in 3 sentences"}' \
 #                       --no-buffer
 if __name__ == "__main__":
-    print("🚀 Agent API running at http://localhost:{PORT}")
+    print(f"🚀 Agent API running at http://localhost:{PORT}")
     print("   GET  /health")
     print("   POST /chat         — full JSON response")
     print("   POST /chat/stream  — server-sent events")
+    print(f"   Docs:  http://localhost:{PORT}/docs")
     uvicorn.run(app, host="0.0.0.0", port=PORT)
