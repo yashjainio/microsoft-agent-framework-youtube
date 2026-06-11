@@ -94,10 +94,10 @@ Your Microsoft Agent Framework environment is ready to build powerful AI agents 
 - Chaining multiple agents in a sequential execution pattern.
 - Passing outputs between agents to complete complex multi-step tasks.
 
-### **9. Sequential Multi-Agent Workflow with Intermediate Responses in Microsoft Agent Framework**
+### **9. Concurrent Fan-Out Workflows in Microsoft Agent Framework**
 
-- Streaming and surfacing intermediate agent outputs during execution.
-- Improving responsiveness and observability in multi-agent pipelines.
+- Running multiple agents in parallel using the concurrent execution pattern.
+- Aggregating results from simultaneous agent runs for efficiency and scale.
 
 ### **10. Conditional Routing & Handoffs in Microsoft Agent Framework**
 
@@ -154,11 +154,17 @@ Your Microsoft Agent Framework environment is ready to build powerful AI agents 
 # **📄 requirements.txt**
 
 ```
-azure-ai-projects
-azure-ai-agents
-azure-identity
-python-dotenv
-notebook
+agent-framework==1.4.0
+agent-framework-openai>=1.4.0
+agent-framework-orchestrations>=1.0.0b0
+agent-framework-a2a>=0.1.0
+pydantic>=2.0.0
+requests>=2.28.0
+python-dotenv>=1.0.0
+fastmcp>=2.0.0
+uvicorn>=0.30.0
+starlette>=0.40.0
+fastapi>=0.115.0
 ```
 
 ---
